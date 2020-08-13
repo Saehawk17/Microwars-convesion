@@ -64,7 +64,7 @@ public class Battle {
     public String printCorpsInBattle()
     {
         String returnString="Battle Corps ";
-        System.out.print(battleCorps.size()+ "\n");
+        
         Iterator <ArmyCorp> bc = battleCorps.iterator();
         while(bc.hasNext())
         {
