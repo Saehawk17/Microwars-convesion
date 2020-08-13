@@ -48,7 +48,7 @@ public class mapPanel extends JPanel implements Runnable {
     Set<ArmyCorp> battleCorps;
     Boolean gameStarted = false;
     Battle closeBattle;
-    Set<Battle> skirmishes= new HashSet<>();
+    Set<Battle> skirmishes = new HashSet<>();
     private Timer timer;
 
     private boolean redOrders = false;
@@ -183,7 +183,7 @@ public class mapPanel extends JPanel implements Runnable {
     Check for combat very basic
      */
     public void checkForCombat() {
-        skirmishes.clear();
+        skirmishes=new HashSet<>();
         Iterator<ArmyCorp> fi = redCorp.iterator();
         while (fi.hasNext()) {
             ArmyCorp rc = fi.next();
@@ -235,15 +235,17 @@ public class mapPanel extends JPanel implements Runnable {
                 closeBattle = new Battle(battleCorps);
                 skirmishes.add(closeBattle);
                 battleCorps.clear();
+               
+                }
+             
             }
+System.out.print("\n The size of Skirmishes is " + skirmishes.size() + "\n");
+                for (Battle b : skirmishes) {
+                    System.out.print(b.printCorpsInBattle() + "\n");
+            
+
         }
 
-        System.out.print("\n The size of Skirmishes is " + skirmishes.size() + "\n");
-        for (Battle b : skirmishes) {
-            System.out.print(b.printCorpsInBattle() + "\n");
-            
-        }
-        
     }
 
     /*
