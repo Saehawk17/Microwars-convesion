@@ -1,4 +1,5 @@
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class Battle {
     private ArmyCorp testCorp;
     public Battle(Set <ArmyCorp> bc)
     {
-        battleCorps=bc;
+        battleCorps= new HashSet(bc);
         calcTotalStrength();
         
     }
@@ -56,5 +57,23 @@ public class Battle {
             {
                 return this.redStrength;
             }
+    public Set <ArmyCorp> getCorpsInBattle()
+    {
+        return this.battleCorps;
+    }
+    public String printCorpsInBattle()
+    {
+        String returnString="Battle Corps ";
+        System.out.print(battleCorps.size()+ "\n");
+        Iterator <ArmyCorp> bc = battleCorps.iterator();
+        while(bc.hasNext())
+        {
+            ArmyCorp a = bc.next();
+            
+            returnString =returnString+ a.toString()+"\n";
+            
+        }
+        return returnString;
+    }
     
 }
