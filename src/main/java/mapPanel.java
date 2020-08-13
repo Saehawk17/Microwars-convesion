@@ -272,7 +272,7 @@ public class mapPanel extends JPanel implements Runnable {
                 
          
     
-        
+    }     
     
   /*
     Calculates artillary losses
