@@ -1,3 +1,4 @@
+
 import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JOptionPane;
@@ -24,80 +25,142 @@ public class ArmyCorp {
         this.morale = m;
         this.pos = p;
         this.side = s;
-        this.hitPoints=calculateHitPoints();
+        this.hitPoints = calculateHitPoints();
     }
 
+    /*
+    Set the amount of artillary in a Corp
+     */
     public void setArtillary(int a) {
         this.artillary = a;
     }
 
+    /*
+    Returns the amount of Artillary in the Corp
+     */
     public int getArtllary() {
         return this.artillary;
     }
 
+    /*
+    Sets the amount of CAvelry in a Corp
+     */
     public void setCavelry(int a) {
         this.cavelry = a;
     }
 
+    /*
+    Returns the amount of Cavelry in a Corp
+     */
     public int getCavelry() {
         return this.cavelry;
     }
 
+    /*
+    Sets the amount of the Infantry in a Corp
+     */
     public void setInfantry(int a) {
         this.infantry = a;
     }
 
+    /*
+    Returns the amount of Infantry in a Corp
+     */
     public int getInfantry() {
         return this.infantry;
     }
 
+    /*
+    Sets a Corps Morale
+     */
     public void setMorale(int a) {
         this.morale = a;
     }
 
+    /*
+    Returns a Corps morale
+     */
     public int getMorale() {
         return this.morale;
     }
 
+    /*
+    Sets the Corps Leader
+     */
     public void setLeader(String s) {
         this.leader = s;
     }
 
+    /*
+    Returns a Corps Leader
+     */
     public String getLeader() {
         return this.leader;
     }
 
+    /*
+    Sets the side a Corps belong to
+     */
     public void setSide(String s) {
         this.side = s;
     }
 
+    /*
+    Returns the side a Corp belongs to
+     */
     public String getSide() {
         return this.side;
     }
 
+    /*
+    Sets a Corps position on the map. THe position can be a number between 1 
+    and 1000.If P is less than 0 or greater than 1000 then the position remains
+    unchanged.
+     */
     public void setPosition(int p) {
-        this.pos = p;
+        if (p > 0 & p < 1001) {
+            this.pos = p;
+        }
     }
 
+    /*
+    Returns the current position of the Corps
+     */
     public int getPosition() {
         return this.pos;
     }
 
+    /*
+    Calculates the y cordinate of the top corner of the square denoted by
+    the units position
+     */
     public int calcY() {
         int row = this.pos / 40;
         return row * 25;
     }
 
+    /*
+    Calculates the x cordinate of the top corner of the square denoted by
+    the units position
+     */
     public int calcX() {
         int row = this.pos / 40;
         int colum = pos - (row * 40);
         return colum * 25;
     }
-    public int calculateHitPoints()
-    {
-        return (this.getInfantry()/500+this.artillary/100+this.cavelry/250);
+
+    /*
+    Calculates the hit points of a unit and returns
+    as an int - basic at the moment
+     */
+    public int calculateHitPoints() {
+        return (this.getInfantry() / 500 + this.artillary / 100 + this.cavelry / 250);
     }
 
+    /*
+    Draws the unit at its position using calcX and calcY to get its x and y 
+    positions for the map panel
+     */
     public void draw(Graphics g) {
         if (this.side.equalsIgnoreCase("allies")) {
             g.setColor(Color.black);
@@ -113,6 +176,7 @@ public class ArmyCorp {
         }
         g.drawString(this.leader, this.calcX(), this.calcY());
         
+        System.out.print(" " + this.leader + " right side is " + this.checkRightSide(this) +" "+this.getPosition() +"\n");
     }
 
     @Override
@@ -120,38 +184,79 @@ public class ArmyCorp {
         return "Artillary " + this.getArtllary() + " Cavelry " + this.getCavelry() + " Infantry " + this.getInfantry() + " Leader " + this.getLeader();
     }
 
+    /*
+    Check if unit is at the right edge of the screen
+     */
+    public boolean checkRightSide(ArmyCorp ac) {
+        int remainder = (ac.getPosition()+1) % 40;
+        return remainder == 0;
+    }
+
+    /*
+    Check if unit is on the left side
+     */
+    public boolean checkLeftSide(ArmyCorp ac) {
+        int remainder = ac.getPosition() % 40;
+        return remainder == 0;
+    }
+
+    /*
+    Move the units by adjusting its position using the orders input
+     */
     public void move(String o) {
         char dir = o.charAt(0);
         char mov = o.charAt(1);
         int offset = 0;
         int dist;
+        dist = Character.getNumericValue(mov);
         int curr = this.getPosition();
-        switch(dir) {
+        switch (dir) {
             case 'n':
-                offset = -40;
+                offset = -40 * dist;
                 break;
             case 's':
-                offset = 40;
+                offset = 40 * dist;
                 break;
             case 'e':
-                offset = 1;
-                break;
+                if (!checkRightSide(this)) {
+                    int checkWithin = this.getPosition() + 1;
+                    if (checkWithin % 39 == 0) {
+                        offset = 1;
+                    } else {
+                        offset = 1 * dist;
+                      break; 
+                    }
+                }
             case 'w':
-                offset = -1;
-                break;
+                if (!checkLeftSide(this)) {
+                    int checkWithin = this.getPosition() - 1;
+                    if (checkWithin % 40 == 0) {
+                        offset = -1;
+                    } else {
+                        offset = -1 * dist;
+                      break;  
+                    }
+                    
+                }
             default:
                 break;
         }
-        dist = Character.getNumericValue(mov);
-        offset = offset * dist;
+
         this.setPosition(curr + offset);
-        
+
     }
 
+    /*
+    Returns the units orders which are a String
+     */
     public String getOrders() {
         return this.orders;
     }
 
+    /*
+    Collects th eorders for each unit in turn as a 2 character string direction 
+    letter and amount of squares to move. Diretion letters ar lower case
+     */
     public void inputOrders() {
         String name = this.getLeader();
         String newOrders;
@@ -165,7 +270,7 @@ public class ArmyCorp {
                     if (distChar == '1' || distChar == '2' || distChar == '0') {
                         acceptable = true;
                         orders = newOrders;
-                       
+
                         newOrders = "";
                     }
                 }
