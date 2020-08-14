@@ -118,7 +118,7 @@ public class ArmyCorp {
     unchanged.
      */
     public void setPosition(int p) {
-        if (p > 0 & p < 1001) {
+        if (p >= 0 & p < 1000) {
             this.pos = p;
         }
     }
@@ -175,8 +175,8 @@ public class ArmyCorp {
             g.setColor(Color.red);
         }
         g.drawString(this.leader, this.calcX(), this.calcY());
-        
-        System.out.print(" " + this.leader + " right side is " + this.checkRightSide(this) +" "+this.getPosition() +"\n");
+
+        System.out.print(" " + this.leader + " right side is " + this.checkRightSide(this) + " " + this.getPosition() + "\n");
     }
 
     @Override
@@ -188,7 +188,7 @@ public class ArmyCorp {
     Check if unit is at the right edge of the screen
      */
     public boolean checkRightSide(ArmyCorp ac) {
-        int remainder = (ac.getPosition()+1) % 40;
+        int remainder = (ac.getPosition() + 1) % 40;
         return remainder == 0;
     }
 
@@ -198,6 +198,28 @@ public class ArmyCorp {
     public boolean checkLeftSide(ArmyCorp ac) {
         int remainder = ac.getPosition() % 40;
         return remainder == 0;
+    }
+
+    /*
+    Check if position is in the top row
+     */
+    public boolean checkTopRow(ArmyCorp ac) {
+        boolean returnValue = false;
+        if (ac.getPosition() >= 0 & ac.getPosition() < 40) {
+            returnValue = true;
+        }
+        return returnValue;
+    }
+
+    /*
+    Check if unit is in botoom row
+     */
+    public boolean checkBottomRow(ArmyCorp ac) {
+        boolean returnValue = false;
+        if (ac.getPosition() > 959 & ac.getPosition() < 1000) {
+            returnValue = true;
+        }
+        return returnValue;
     }
 
     /*
@@ -212,10 +234,24 @@ public class ArmyCorp {
         int curr = this.getPosition();
         switch (dir) {
             case 'n':
-                offset = -40 * dist;
+                if (!checkTopRow(this)) {
+                    int CheckWithin = this.getPosition() - 40;
+                    if (CheckWithin < 40) {
+                        offset = -40;
+                    } else {
+                        offset = -40 * dist;
+                    }
+                }
                 break;
             case 's':
-                offset = 40 * dist;
+                if (!checkBottomRow(this)) {
+                    int CheckWithin = this.getPosition() + 40;
+                    if (CheckWithin > 959 & CheckWithin < 1000) {
+                        offset = 40;
+                    } else {
+                        offset = 40 * dist;
+                    }
+                }
                 break;
             case 'e':
                 if (!checkRightSide(this)) {
@@ -224,9 +260,11 @@ public class ArmyCorp {
                         offset = 1;
                     } else {
                         offset = 1 * dist;
-                      break; 
+                        break;
                     }
+
                 }
+                break;
             case 'w':
                 if (!checkLeftSide(this)) {
                     int checkWithin = this.getPosition() - 1;
@@ -234,9 +272,9 @@ public class ArmyCorp {
                         offset = -1;
                     } else {
                         offset = -1 * dist;
-                      break;  
+                        break;
                     }
-                    
+
                 }
             default:
                 break;
