@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -5,7 +6,7 @@ public class BuildArmy implements Army {
 
     CSVReader reader;
 
-    Set <ArmyCorp> builtArmy = new HashSet<>();
+    Set<ArmyCorp> builtArmy = new HashSet();
 
     ArmyCorp corpToAdd;
 
@@ -45,7 +46,11 @@ public class BuildArmy implements Army {
         return returnArmyString;
     }
 
-    public Set <ArmyCorp> listOfCorp() {
+    public Set<ArmyCorp> listOfCorp() {
         return this.builtArmy;
     }
+
+  
+
+    
 }

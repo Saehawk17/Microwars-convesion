@@ -112,7 +112,6 @@ public class MainDisplay extends javax.swing.JFrame {
     }
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {
-       
         gameRunning = false;
         endGame();
     }
@@ -203,6 +202,8 @@ public class MainDisplay extends javax.swing.JFrame {
 
     private javax.swing.JTextArea redArmyDisplayPanel;
 
-     {
+    {
     }
+
+    
 }

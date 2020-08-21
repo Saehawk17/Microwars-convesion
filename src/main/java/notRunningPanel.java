@@ -17,6 +17,4 @@ public class notRunningPanel extends javax.swing.JPanel {
 
     private javax.swing.JLabel jLabel1;
 
-     
-    
 }

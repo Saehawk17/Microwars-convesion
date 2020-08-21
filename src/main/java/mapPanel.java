@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -44,20 +43,23 @@ public class mapPanel extends JPanel implements Runnable {
     JTextArea redArmyDisplay;
 
     Set<ArmyCorp> redCorp;
+
     Set<ArmyCorp> blueCorp;
+
     Set<ArmyCorp> battleCorps;
+
     Boolean gameStarted = false;
+
     Battle closeBattle;
-    Set<Battle> skirmishes = new HashSet<>();
+
+    Set<Battle> skirmishes = new HashSet();
+
     private Timer timer;
 
     private boolean redOrders = false;
 
     private boolean blueOrders = false;
 
-    /*
-    Creates the map display panel
-     */
     public mapPanel(MainDisplay MD) {
         mainDisplay = MD;
         setPreferredSize(new Dimension(1000, 625));
@@ -75,7 +77,6 @@ public class mapPanel extends JPanel implements Runnable {
         redCorp = new HashSet(redArmy.listOfCorp());
         blueCorp = new HashSet(blueArmy.listOfCorp());
         battleCorps = new HashSet<ArmyCorp>();
-
     }
 
     @Override
@@ -84,9 +85,6 @@ public class mapPanel extends JPanel implements Runnable {
         startGame();
     }
 
-    /*
-    Starts the Game thread running
-     */
     public void startGame() {
         if (animator == null) {
             animator = new Thread(this);
@@ -100,7 +98,6 @@ public class mapPanel extends JPanel implements Runnable {
         paintScreen();
         while (gameStarted) {
             gameUpdate();
-
             gameRender();
             paintScreen();
             JOptionPane.showMessageDialog(infoPanel, "End of orders input");
@@ -110,37 +107,26 @@ public class mapPanel extends JPanel implements Runnable {
         System.exit(0);
     }
 
-    /*
-    *Draws the image for the map panel in a buffer
-     */
     public void gameRender() {
-
         if (dbImage == null) {
-
             dbImage = createImage(1000, 625);
-
             if (dbImage == null) {
                 System.out.println("dbImage is null");
                 return;
             }
         }
-
         dbg2D = (Graphics2D) dbImage.getGraphics();
         dbg2D.setColor(Color.yellow);
         dbg2D.fillRect(0, 0, 1000, 625);
-
         backDisplay.draw(dbg2D);
-        redCorp.forEach(ac -> {
-            ac.draw(dbg2D);
-        });
-        blueCorp.forEach(ac -> {
-            ac.draw(dbg2D);
-        });
+        redCorp.forEach( ac->{
+    ac.draw(dbg2D);
+});
+        blueCorp.forEach( ac->{
+    ac.draw(dbg2D);
+});
     }
 
-    /*
-    *Draws the image from gameRender on the screen
-     */
     private void paintScreen() {
         Graphics g;
         try {
@@ -148,7 +134,6 @@ public class mapPanel extends JPanel implements Runnable {
             if ((g != null) && (dbImage != null)) {
                 dbg2D.setColor(Color.black);
             }
-
             g.drawImage(dbImage, 0, 0, null);
             Toolkit.getDefaultToolkit().sync();
             g.dispose();
@@ -157,33 +142,24 @@ public class mapPanel extends JPanel implements Runnable {
         }
     }
 
-    /*
-    *Takes orders and displays the army info in the relevent boxes
-    Orders are in the form of a letter and a number N,S,W,E for direction and
-    the number for how many square sto move
-     */
     public void gameUpdate() {
         redArmyDisplay.setText(redArmy.displayArmyTextBox());
         blueArmyDisplay.setText(blueArmy.displayArmyTextBox());
         redOrders = false;
         while (!redOrders) {
-            redCorp.forEach(ac -> {
-                ac.inputOrders();
-            });
+            redCorp.forEach( ac->{
+    ac.inputOrders();
+});
             mapDisplayPanel.requestFocus(true);
-            redCorp.forEach(ac -> {
-                ac.move(ac.getOrders());
-            });
+            redCorp.forEach( ac->{
+    ac.move(ac.getOrders());
+});
             redOrders = true;
         }
-
     }
 
-    /*
-    Check for combat very basic
-     */
     public void checkForCombat() {
-        skirmishes=new HashSet<>();
+        skirmishes = new HashSet();
         Iterator<ArmyCorp> fi = redCorp.iterator();
         while (fi.hasNext()) {
             ArmyCorp rc = fi.next();
@@ -195,7 +171,7 @@ public class mapPanel extends JPanel implements Runnable {
                 int AlliedSquare = bc.getPosition();
                 int close = FrenchSquare - AlliedSquare;
                 System.out.print(" " + bc.getLeader());
-                switch (close) {
+                switch(close) {
                     case 40:
                         battleCorps.add(bc);
                         battleCorps.add(rc);
@@ -229,28 +205,19 @@ public class mapPanel extends JPanel implements Runnable {
                         battleCorps.add(rc);
                         break;
                 }
-
             }
             if (!battleCorps.isEmpty()) {
                 closeBattle = new Battle(battleCorps);
                 skirmishes.add(closeBattle);
                 battleCorps.clear();
-               
-                }
-             
             }
-System.out.print("\n The size of Skirmishes is " + skirmishes.size() + "\n");
-                for (Battle b : skirmishes) {
-                    System.out.print(b.printCorpsInBattle() + "\n");
-            
-
         }
-
+        System.out.print("\n The size of Skirmishes is " + skirmishes.size() + "\n");
+        for (Battle b : skirmishes) {
+            System.out.print(b.printCorpsInBattle() + "\n");
+        }
     }
 
-    /*
-    Calculates artillary losses
-     */
     public double artillaryLosses(ArmyCorp ac) {
         Random rand = new Random();
         double mod = 0.01;
@@ -266,18 +233,12 @@ System.out.print("\n The size of Skirmishes is " + skirmishes.size() + "\n");
         return casPercent;
     }
 
-    /*
-    * Aplly losses to a corp
-     */
     public void applyLoss(ArmyCorp a, Double l) {
         a.setInfantry((int) (a.getInfantry() - (a.getInfantry() * l / 100)));
         a.setCavelry((int) (a.getCavelry() - (a.getCavelry() * l / 100)));
         a.setArtillary((int) (a.getArtllary() - (a.getArtllary() * l / 100)));
     }
 
-    /*
-    *Artllary Phase
-     */
     public void artillaryPhase(ArmyCorp a, ArmyCorp b) {
         JOptionPane.showMessageDialog(infoPanel, "Artillary Phase" + "\n" + a.getLeader() + " is fighting " + b.getLeader());
         double rHitPercent = artillaryLosses(a);
@@ -286,4 +247,6 @@ System.out.print("\n The size of Skirmishes is " + skirmishes.size() + "\n");
         applyLoss(a, bHitPercent);
         applyLoss(b, rHitPercent);
     }
+
+    
 }
