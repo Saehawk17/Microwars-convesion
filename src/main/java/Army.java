@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Set;
 
 public interface Army {
@@ -6,5 +7,7 @@ public interface Army {
 
     String displayArmyTextBox();
 
-    Set <ArmyCorp> listOfCorp();
+    Set<ArmyCorp> listOfCorp();
+
+    
 }
